@@ -132,30 +132,29 @@
     settings.color_theme = "dusklight";
   };
 
-  # .config/niri/config.kdl
-  # prefer-no-csd
-  # focus-ring {
-  #     active-color "#22cccc"
-  # }
-  # window-rule {
-  #     geometry-corner-radius 6
-  #     clip-to-geometry true
-  # }
-  # binds {
-  #     Mod+Return hotkey-overlay-title="Open a Terminal" { spawn "kitty"; }
-  #     Mod+Space hotkey-overlay-title="Run an Application" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-  #     Mod+P hotkey-overlay-title="Open the Power Menu" { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
-  #     Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
-  # }
-  # spawn-at-startup "fcitx5" "-d"
-  # spawn-at-startup "noctalia-shell"
-  # // Set the overview wallpaper on the backdrop.
-  # layer-rule {
-  #     match namespace="^noctalia-overview*"
-  #     place-within-backdrop true
-  # }
+  # niri (add include "custom.kdl" to the end of .config/niri/config.kdl)
+  xdg.configFile."niri/custom.kdl".text = ''
+    prefer-no-csd
+    window-rule {
+        geometry-corner-radius 6
+        clip-to-geometry true
+    }
+    binds {
+        Mod+Return hotkey-overlay-title="Open a Terminal" { spawn "kitty"; }
+        Mod+Space hotkey-overlay-title="Run an Application" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+        Mod+P hotkey-overlay-title="Open the Power Menu" { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+        Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    }
+    spawn-at-startup "fcitx5" "-d"
+    spawn-at-startup "noctalia-shell"
+    spawn-at-startup "systemctl" "--user" "start" "hyprpolkitagent"
+    layer-rule {
+        match namespace="^noctalia-overview*"
+        place-within-backdrop true
+    }
+  '';  
 
-  # .config/noctalia/settings.json
+  # noctalia (.config/noctalia/settings.json)
   # {
   #     "appLauncher": {
   #         "terminalCommand": "kitty -e",
