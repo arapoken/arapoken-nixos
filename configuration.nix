@@ -36,18 +36,7 @@
   services.upower.enable = true;
 
   services.udisks2.enable = true;
-  security.polkit = {
-    enable = true;
-    extraConfig = ''
-      polkit.addRule(function(action, subject) {
-        if ((action.id == "org.freedesktop.udisks2.filesystem-mount" ||
-             action.id == "org.freedesktop.udisks2.filesystem-mount-system") &&
-            subject.user == "arapoken") {
-          return polkit.Result.YES;
-        }
-      });
-    '';
-  };
+  security.polkit.enable = true;
 
   # Set your time zone
   time.timeZone = "Asia/Shanghai";
@@ -140,6 +129,7 @@
     fastfetch
     # fuzzel
     git
+    hyprpolkitagent
     kitty
     neovim
     # vim
