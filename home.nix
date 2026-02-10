@@ -8,10 +8,6 @@
 
   # Packages that should be installed to the user profile.
   home.packages = with pkgs; [
-    rust-analyzer fortls basedpyright
-    (python3.withPackages (ps: with ps; [
-       numpy scipy matplotlib  
-    ]))
   ];
 
   # This value determines the Home Manager release that your
@@ -51,6 +47,13 @@
         };
       }
     ];
+  };
+
+  # direnv
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    config.global.hide_env_diff = true;
   };
 
   # yazi
@@ -114,7 +117,7 @@
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
         end,
       })
-    local cmp = require'cmp'
+      local cmp = require'cmp'
       cmp.setup({
         snippet = { expand = function(args) require('luasnip').lsp_expand(args.body) end },
         mapping = cmp.mapping.preset.insert({
@@ -124,12 +127,6 @@
         sources = cmp.config.sources({{ name = 'nvim_lsp' }})
       })
     '';
-  };
-
-  # btop
-  programs.btop = {
-    enable = true;
-    settings.color_theme = "dusklight";
   };
 
   # niri (add include "custom.kdl" to the end of .config/niri/config.kdl)
@@ -162,10 +159,7 @@
   #     "colorSchemes": {
   #         "useWallpaperColors": true
   #     },
-  #     "general": {
-  #         "avatarImage": "/home/arapoken/Downloads/Screenshot_2026-01-29_at_23-48-18.png",
   #     "wallpaper": {
-  #         "directory": "/home/arapoken/Downloads",
   #         "overviewEnabled": true,
   #     }
   # } 
