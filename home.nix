@@ -106,9 +106,6 @@
         if ok and builtin_config then
           vim.lsp.config[lsp] = vim.tbl_deep_extend("force", builtin_config, {
             install = { capabilities = capabilities },
-            settings = (lsp == "tinymist") and {
-              tinymist = { exportPdf = "onSave" }
-            } or {}
           })
           vim.lsp.enable(lsp)
         end
@@ -126,7 +123,7 @@
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client and client.name == 'tinymist' then
-            vim.keymap.set('n', '<leader>pv', ":TypstPreview<CR>", { buffer = args.buf })
+            vim.keymap.set('n', '<leader>pv', ":TypstPreview<CR>", opts)
           end
         end,
       })
