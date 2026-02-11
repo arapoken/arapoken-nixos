@@ -83,6 +83,7 @@
       cmp-nvim-lsp
       luasnip
       nvim-lspconfig
+      typst-preview-nvim
     ];
     extraLuaConfig = ''
       vim.opt.number = true
@@ -112,6 +113,10 @@
           vim.lsp.enable(lsp)
         end
       end
+      require('typst-preview').setup({
+        open_cmd = "firefox --new-window %s",
+        follow_cursor = true, 
+      })
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)
           local opts = { buffer = args.buf }
@@ -121,14 +126,7 @@
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client and client.name == 'tinymist' then
-            vim.api.nvim_create_autocmd('BufWritePost', {
-              buffer = args.buf,
-              callback = function()
-                if vim.fn.exists(':LspTinymistExportPdf') > 0 then
-                  vim.cmd('LspTinymistExportPdf')
-                end
-              end,
-            })
+            vim.keymap.set('n', '<leader>pv', ":TypstPreview<CR>", { buffer = args.buf })
           end
         end,
       })
@@ -146,6 +144,9 @@
 
   # niri (add include "custom.kdl" to the end of .config/niri/config.kdl)
   xdg.configFile."niri/custom.kdl".text = ''
+    hotkey-overlay {
+        skip-at-startup
+    }
     prefer-no-csd
     window-rule {
         geometry-corner-radius 6
