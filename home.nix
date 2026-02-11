@@ -98,15 +98,19 @@
       vim.opt.tabstop = 4
       require("catppuccin").setup({ flavour = "mocha" })
       vim.cmd.colorscheme "catppuccin"
-      local servers = { "basedpyright", "fortls", "rust_analyzer" }
+      local servers = { "basedpyright", "fortls", "rust_analyzer", "tinymist" }
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       for _, lsp in ipairs(servers) do
-          if vim.lsp.config[lsp] then
-              vim.lsp.config(lsp, {
-                  install = { capabilities = capabilities }
-              })
-              vim.lsp.enable(lsp)
-          end
+        local ok, builtin_config = pcall(require, 'lspconfig.configs.' .. lsp)
+        if ok and builtin_config then
+          vim.lsp.config[lsp] = vim.tbl_deep_extend("force", builtin_config, {
+            install = { capabilities = capabilities },
+            settings = (lsp == "tinymist") and {
+              tinymist = { exportPdf = "onSave" }
+            } or {}
+          })
+          vim.lsp.enable(lsp)
+        end
       end
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)
@@ -115,6 +119,17 @@
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client and client.name == 'tinymist' then
+            vim.api.nvim_create_autocmd('BufWritePost', {
+              buffer = args.buf,
+              callback = function()
+                if vim.fn.exists(':LspTinymistExportPdf') > 0 then
+                  vim.cmd('LspTinymistExportPdf')
+                end
+              end,
+            })
+          end
         end,
       })
       local cmp = require'cmp'
