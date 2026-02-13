@@ -127,6 +127,9 @@
   };
   boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
 
+  hardware.enableRedistributableFirmware = true;
+  hardware.cpu.amd.updateMicrocode = true;
+
   nixpkgs.overlays = [
     (self: super: {
       noctalia-shell = (import <nixos-unstable> { 
