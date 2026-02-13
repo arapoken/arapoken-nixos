@@ -109,9 +109,24 @@
     users.arapoken = import ./home.nix;
   };
 
-  # Allow unfree packages
+  # Allow unfree packages (nvidia)
   nixpkgs.config.allowUnfree = true;
-  
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia = {
+    open = true; 
+    modesetting.enable = true;
+    package = config.boot.kernelPackages.nvidiaPackages.latest; 
+    powerManagement.enable = true;
+    powerManagement.finegrained = true;
+    prime = {
+      offload.enable = true;
+      offload.enableOffloadCmd = true;
+      amdgpuBusId = "PCI:52:0:0"; 
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+  boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
+
   nixpkgs.overlays = [
     (self: super: {
       noctalia-shell = (import <nixos-unstable> { 
